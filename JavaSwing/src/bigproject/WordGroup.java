@@ -83,6 +83,26 @@ public class WordGroup {
             System.out.println("Problem");
         }
     }
+    
+    public void mergeWithoutDelete(WordGroup a) {
+        File filewrite = new File(this.path);
+        File fileread = new File(a.path);
+        try {
+            FileWriter fw = new FileWriter(filewrite,true);
+            Scanner fr = new Scanner(fileread);
+
+            while(fr.hasNextLine()) {
+                String line = fr.nextLine();
+                fw.write(line);
+                fw.write("\r\n");
+            }
+
+            fw.close();
+            fr.close();
+        } catch(IOException e) {
+            System.out.println("Problem");
+        }
+    }
 
     //This method rename the selected word group.
     public void renameTo(String name) {
@@ -334,6 +354,26 @@ public class WordGroup {
         this.remove(initial.name);
         this.addWord(result.name, result.meanning, result.link, initial.lastTime, initial.restTime);
         this.sort();
+    }
+    
+    public static File getCombineAllWordGroup() {
+        String fileName = "-+ALL+-";
+        
+        if(isExists(fileName)){
+            delete(new WordGroup(fileName));
+        }
+        
+        ArrayList<WordGroup> listOfWordGroup = Directory.list();
+        create(fileName);
+        WordGroup combineAllWordGroup = new WordGroup(fileName);
+        
+        for(int i = 0; i < listOfWordGroup.size(); i++) {
+            combineAllWordGroup.mergeWithoutDelete(listOfWordGroup.get(i));
+        }
+        combineAllWordGroup.sort();
+        
+        File fileCombineAllWordGroup = new File(combineAllWordGroup.path);
+        return fileCombineAllWordGroup;
     }
     
 }
